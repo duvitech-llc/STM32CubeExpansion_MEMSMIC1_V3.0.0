@@ -321,6 +321,7 @@ static uint8_t  USBD_AUDIO_Setup (USBD_HandleTypeDef *pdev,
     case USB_REQ_SET_INTERFACE :
       if ((uint8_t)(req->wValue) < USBD_MAX_NUM_INTERFACES)
       {
+				printf("Alt Setting: %d\r\n", (uint8_t)(req->wValue));
         haudio->alt_setting = (uint8_t)(req->wValue);
       }
       else
@@ -708,112 +709,92 @@ uint8_t  USBD_AUDIO_RegisterInterface  (USBD_HandleTypeDef   *pdev,
 */
 void USBD_AUDIO_Init_Microphone_Descriptor(USBD_HandleTypeDef   *pdev, uint32_t samplingFrequency, uint8_t Channels)
 {
-  uint16_t index;
+  uint16_t index = 0;
   uint8_t AUDIO_CONTROLS;   
-  USBD_AUDIO_CfgDesc[0] = 0x09;                                                /* bLength */
-  USBD_AUDIO_CfgDesc[1] = 0x02;                                                /* bDescriptorType */
-  USBD_AUDIO_CfgDesc[2] = ((USB_AUDIO_CONFIG_DESC_SIZ+Channels-1)&0xff);       /* wTotalLength */
-  USBD_AUDIO_CfgDesc[3] = ((USB_AUDIO_CONFIG_DESC_SIZ+Channels-1)>>8);
-  USBD_AUDIO_CfgDesc[4] = 0x02;                                                /* bNumInterfaces */
-  USBD_AUDIO_CfgDesc[5] = 0x01;                                                /* bConfigurationValue */
-  USBD_AUDIO_CfgDesc[6] = 0x00;                                                /* iConfiguration */
-  USBD_AUDIO_CfgDesc[7] = 0x80;                                                /* bmAttributes  BUS Powered*/
-  USBD_AUDIO_CfgDesc[8] = 0x32;                                                /* bMaxPower = 100 mA*/   
+  USBD_AUDIO_CfgDesc[index++] = 0x09;                                                /* bLength */
+  USBD_AUDIO_CfgDesc[index++] = 0x02;                                                /* bDescriptorType */
+  USBD_AUDIO_CfgDesc[index++] = ((USB_AUDIO_CONFIG_DESC_SIZ+Channels-1)&0xff);       /* wTotalLength */
+  USBD_AUDIO_CfgDesc[index++] = ((USB_AUDIO_CONFIG_DESC_SIZ+Channels-1)>>8);
+  USBD_AUDIO_CfgDesc[index++] = 0x02;                                                /* bNumInterfaces */
+  USBD_AUDIO_CfgDesc[index++] = 0x01;                                                /* bConfigurationValue */
+  USBD_AUDIO_CfgDesc[index++] = 0x00;                                                /* iConfiguration */
+  USBD_AUDIO_CfgDesc[index++] = 0x80;                                                /* bmAttributes  BUS Powered*/
+  USBD_AUDIO_CfgDesc[index++] = 0x32;                                                /* bMaxPower = 100 mA*/   
+	/*IAD*/
+	USBD_AUDIO_CfgDesc[index++] = 0x08;                                /* bLength */
+	USBD_AUDIO_CfgDesc[index++] = 0x0B;                   /* bDescriptorType */
+	USBD_AUDIO_CfgDesc[index++] = 0x00;                                /* bFirstInterface */
+	USBD_AUDIO_CfgDesc[index++] = 0x02;                                /* bInterface Count */
+	USBD_AUDIO_CfgDesc[index++] = USB_DEVICE_CLASS_AUDIO;              /* bInterfaceClass */
+	USBD_AUDIO_CfgDesc[index++] = AUDIO_SUBCLASS_AUDIOCONTROL;         /* bInterfaceSubClass */
+	USBD_AUDIO_CfgDesc[index++] = AUDIO_PROTOCOL_UNDEFINED;            /* bInterfaceProtocol */
+	USBD_AUDIO_CfgDesc[index++] = 0x00;                                /* iFunction- string index */
+	
   /* USB Microphone Standard interface descriptor */
-  USBD_AUDIO_CfgDesc[9] = 9;                                                   /* bLength */
-  USBD_AUDIO_CfgDesc[10] = USB_INTERFACE_DESCRIPTOR_TYPE;                      /* bDescriptorType */
-  USBD_AUDIO_CfgDesc[11] = 0x00;                                               /* bInterfaceNumber */
-  USBD_AUDIO_CfgDesc[12] = 0x00;                                               /* bAlternateSetting */
-  USBD_AUDIO_CfgDesc[13] = 0x00;                                               /* bNumEndpoints */
-  USBD_AUDIO_CfgDesc[14] = USB_DEVICE_CLASS_AUDIO;                             /* bInterfaceClass */
-  USBD_AUDIO_CfgDesc[15] = AUDIO_SUBCLASS_AUDIOCONTROL;                        /* bInterfaceSubClass */
-  USBD_AUDIO_CfgDesc[16] = AUDIO_PROTOCOL_UNDEFINED;                           /* bInterfaceProtocol */
-  USBD_AUDIO_CfgDesc[17] = 0x00;                                               /* iInterface */   
+  USBD_AUDIO_CfgDesc[index++] = 9;                                                   /* bLength */
+  USBD_AUDIO_CfgDesc[index++] = USB_INTERFACE_DESCRIPTOR_TYPE;                      /* bDescriptorType */
+  USBD_AUDIO_CfgDesc[index++] = 0x00;                                               /* bInterfaceNumber */
+  USBD_AUDIO_CfgDesc[index++] = 0x00;                                               /* bAlternateSetting */
+  USBD_AUDIO_CfgDesc[index++] = 0x00;                                               /* bNumEndpoints */
+  USBD_AUDIO_CfgDesc[index++] = USB_DEVICE_CLASS_AUDIO;                             /* bInterfaceClass */
+  USBD_AUDIO_CfgDesc[index++] = AUDIO_SUBCLASS_AUDIOCONTROL;                        /* bInterfaceSubClass */
+  USBD_AUDIO_CfgDesc[index++] = AUDIO_PROTOCOL_UNDEFINED;                           /* bInterfaceProtocol */
+  USBD_AUDIO_CfgDesc[index++] = 0x00;                                               /* iInterface */   
   /* USB Microphone Class-specific AC Interface Descriptor */
-  USBD_AUDIO_CfgDesc[18] = 9;                                                  /* bLength */
-  USBD_AUDIO_CfgDesc[19] = AUDIO_INTERFACE_DESCRIPTOR_TYPE;                    /* bDescriptorType */
-  USBD_AUDIO_CfgDesc[20] = AUDIO_CONTROL_HEADER;                               /* bDescriptorSubtype */
-  USBD_AUDIO_CfgDesc[21] = 0x00;       /* 1.00 */                              /* bcdADC */
-  USBD_AUDIO_CfgDesc[22] = 0x01;
-  USBD_AUDIO_CfgDesc[23] = 0x25+Channels;                                      /* wTotalLength = 37+AUDIO_CHANNELS*/
-  USBD_AUDIO_CfgDesc[24] = 0x00;
-  USBD_AUDIO_CfgDesc[25] = 0x01;                                               /* bInCollection */
-  USBD_AUDIO_CfgDesc[26] = 0x01;                                               /* baInterfaceNr */   
+  USBD_AUDIO_CfgDesc[index++] = 9;                                                  /* bLength */
+  USBD_AUDIO_CfgDesc[index++] = AUDIO_INTERFACE_DESCRIPTOR_TYPE;                    /* bDescriptorType */
+  USBD_AUDIO_CfgDesc[index++] = AUDIO_CONTROL_HEADER;                               /* bDescriptorSubtype */
+  USBD_AUDIO_CfgDesc[index++] = 0x00;       /* 1.00 */                              /* bcdADC */
+  USBD_AUDIO_CfgDesc[index++] = 0x01;
+  USBD_AUDIO_CfgDesc[index++] = 0x25+Channels;                                      /* wTotalLength = 37+AUDIO_CHANNELS*/
+  USBD_AUDIO_CfgDesc[index++] = 0x00;
+  USBD_AUDIO_CfgDesc[index++] = 0x01;                                               /* bInCollection */
+  USBD_AUDIO_CfgDesc[index++] = 0x01;                                               /* baInterfaceNr */   
   /* USB Microphone Input Terminal Descriptor */
-  USBD_AUDIO_CfgDesc[27] = AUDIO_INPUT_TERMINAL_DESC_SIZE;                     /* bLength */
-  USBD_AUDIO_CfgDesc[28] = AUDIO_INTERFACE_DESCRIPTOR_TYPE;                    /* bDescriptorType */
-  USBD_AUDIO_CfgDesc[29] = AUDIO_CONTROL_INPUT_TERMINAL;                       /* bDescriptorSubtype */
-  USBD_AUDIO_CfgDesc[30] = 0x01;                                               /* bTerminalID */
-  USBD_AUDIO_CfgDesc[31] = 0x01;                                               /* wTerminalType AUDIO_TERMINAL_USB_MICROPHONE   0x0201 */
-  USBD_AUDIO_CfgDesc[32] = 0x02;
-  USBD_AUDIO_CfgDesc[33] = 0x00;                                               /* bAssocTerminal */
-  USBD_AUDIO_CfgDesc[34] = Channels;                                           /* bNrChannels */   
+  USBD_AUDIO_CfgDesc[index++] = AUDIO_INPUT_TERMINAL_DESC_SIZE;                     /* bLength */
+  USBD_AUDIO_CfgDesc[index++] = AUDIO_INTERFACE_DESCRIPTOR_TYPE;                    /* bDescriptorType */
+  USBD_AUDIO_CfgDesc[index++] = AUDIO_CONTROL_INPUT_TERMINAL;                       /* bDescriptorSubtype */
+  USBD_AUDIO_CfgDesc[index++] = 0x01;                                               /* bTerminalID */
+  USBD_AUDIO_CfgDesc[index++] = 0x01;                                               /* wTerminalType AUDIO_TERMINAL_USB_MICROPHONE   0x0201 */
+  USBD_AUDIO_CfgDesc[index++] = 0x02;
+  USBD_AUDIO_CfgDesc[index++] = 0x00;                                               /* bAssocTerminal */
+  USBD_AUDIO_CfgDesc[index++] = Channels;                                           /* bNrChannels */   
   if(Channels != 2)
   {
-    USBD_AUDIO_CfgDesc[35] = 0x00;                                             /* wChannelConfig 0x0000  Mono */
-    USBD_AUDIO_CfgDesc[36] = 0x00;
+    USBD_AUDIO_CfgDesc[index++] = 0x00;                                             /* wChannelConfig 0x0000  Mono */
+    USBD_AUDIO_CfgDesc[index++] = 0x00;
   }
   else
   {
-    USBD_AUDIO_CfgDesc[35] = 0x03;                                             /* wChannelConfig 0x0003  Stereo */
-    USBD_AUDIO_CfgDesc[36] = 0x00;
+    USBD_AUDIO_CfgDesc[index++] = 0x03;                                             /* wChannelConfig 0x0003  Stereo */
+    USBD_AUDIO_CfgDesc[index++] = 0x00;
   }   
-  USBD_AUDIO_CfgDesc[37] = 0x00;                                               /* iChannelNames */
-  USBD_AUDIO_CfgDesc[38] = 0x00;                                               /* iTerminal */   
+  USBD_AUDIO_CfgDesc[index++] = 0x00;                                               /* iChannelNames */
+  USBD_AUDIO_CfgDesc[index++] = 0x00;                                               /* iTerminal */   
   /* USB Microphone Audio Feature Unit Descriptor */
-  USBD_AUDIO_CfgDesc[39] = 0x07+Channels+1;                                    /* bLength */
-  USBD_AUDIO_CfgDesc[40] = AUDIO_INTERFACE_DESCRIPTOR_TYPE;                    /* bDescriptorType */
-  USBD_AUDIO_CfgDesc[41] = AUDIO_CONTROL_FEATURE_UNIT;                         /* bDescriptorSubtype */
-  USBD_AUDIO_CfgDesc[42] = 0x02;                                               /* bUnitID */
-  USBD_AUDIO_CfgDesc[43] = 0x01;                                               /* bSourceID */
-  USBD_AUDIO_CfgDesc[44] = 0x01;                                               /* bControlSize */   
-  index = 47;   
+  USBD_AUDIO_CfgDesc[index++] = 0x07+Channels+1;                                    /* bLength */
+  USBD_AUDIO_CfgDesc[index++] = AUDIO_INTERFACE_DESCRIPTOR_TYPE;                    /* bDescriptorType */
+  USBD_AUDIO_CfgDesc[index++] = AUDIO_CONTROL_FEATURE_UNIT;                         /* bDescriptorSubtype */
+  USBD_AUDIO_CfgDesc[index++] = 0x02;                                               /* bUnitID */
+  USBD_AUDIO_CfgDesc[index++] = 0x01;                                               /* bSourceID */
+  USBD_AUDIO_CfgDesc[index++] = 0x01;                                               /* bControlSize */   
+  //index = 47;   
+	printf("shoudl be 53 %d\r\n", index);
   if(Channels == 1)
   {
     AUDIO_CONTROLS = (0x02);     
-    USBD_AUDIO_CfgDesc[45] = AUDIO_CONTROLS;
-    USBD_AUDIO_CfgDesc[46] = 0x00;     
+    USBD_AUDIO_CfgDesc[index++] = AUDIO_CONTROLS;
+    USBD_AUDIO_CfgDesc[index++] = 0x00;     
   }
   else
   {
     AUDIO_CONTROLS = (0x02);     
-    USBD_AUDIO_CfgDesc[45] = 0x00;
-    USBD_AUDIO_CfgDesc[46] = AUDIO_CONTROLS;
-    USBD_AUDIO_CfgDesc[index] = AUDIO_CONTROLS;
-    index++;
+    USBD_AUDIO_CfgDesc[index++] = 0x00;
+    USBD_AUDIO_CfgDesc[index++] = AUDIO_CONTROLS;
+    USBD_AUDIO_CfgDesc[index++] = AUDIO_CONTROLS;
   }   
-  if(Channels > 2)
-  {
-    USBD_AUDIO_CfgDesc[index] = AUDIO_CONTROLS;
-    index++;
-  }   
-  if(Channels > 3)
-  {
-    USBD_AUDIO_CfgDesc[index] = AUDIO_CONTROLS;
-    index++;
-  }   
-  if(Channels > 4)
-  {
-    USBD_AUDIO_CfgDesc[index] = AUDIO_CONTROLS;
-    index++;
-  }   
-  if(Channels > 5)
-  {
-    USBD_AUDIO_CfgDesc[index] = AUDIO_CONTROLS;
-    index++;
-  }   
-  if(Channels > 6)
-  {
-    USBD_AUDIO_CfgDesc[index] = AUDIO_CONTROLS;
-    index++;
-  }   
-  if(Channels > 7)
-  {
-    USBD_AUDIO_CfgDesc[index] = AUDIO_CONTROLS;
-    index++;
-  }   
-  USBD_AUDIO_CfgDesc[index] = 0x00;                                            /* iTerminal */
-  index++;   
+	
+  USBD_AUDIO_CfgDesc[index++] = 0x00;                                            /* iTerminal */
   /*USB Microphone Output Terminal Descriptor */
   USBD_AUDIO_CfgDesc[index++] = 0x09;                                          /* bLength */
   USBD_AUDIO_CfgDesc[index++] = AUDIO_INTERFACE_DESCRIPTOR_TYPE;               /* bDescriptorType */
@@ -870,10 +851,10 @@ void USBD_AUDIO_Init_Microphone_Descriptor(USBD_HandleTypeDef   *pdev, uint32_t 
   USBD_AUDIO_CfgDesc[index++] =  AUDIO_STANDARD_ENDPOINT_DESC_SIZE;            /* bLength */
   USBD_AUDIO_CfgDesc[index++] = 0x05;                                          /* bDescriptorType */
   USBD_AUDIO_CfgDesc[index++] = AUDIO_IN_EP;                                   /* bEndpointAddress 1 in endpoint*/
-  USBD_AUDIO_CfgDesc[index++] = 0x05;                                          /* bmAttributes */
+  USBD_AUDIO_CfgDesc[index++] = USBD_EP_TYPE_ISOC; //0x05;                                          /* bmAttributes */
   USBD_AUDIO_CfgDesc[index++] = ((samplingFrequency/1000+2)*Channels*2)&0xFF;  /* wMaxPacketSize */ 
   USBD_AUDIO_CfgDesc[index++] = ((samplingFrequency/1000+2)*Channels*2)>>8; 
-  USBD_AUDIO_CfgDesc[index++] = 0x01;                                          /* bInterval */
+  USBD_AUDIO_CfgDesc[index++] = 0x04;                                          /* bInterval */
   USBD_AUDIO_CfgDesc[index++] = 0x00;                                          /* bRefresh */
   USBD_AUDIO_CfgDesc[index++] = 0x00;                                          /* bSynchAddress */   
   /* Endpoint - Audio Streaming Descriptor*/
@@ -884,7 +865,8 @@ void USBD_AUDIO_Init_Microphone_Descriptor(USBD_HandleTypeDef   *pdev, uint32_t 
   USBD_AUDIO_CfgDesc[index++] = 0x00;                                          /* bLockDelayUnits */
   USBD_AUDIO_CfgDesc[index++] = 0x00;                                          /* wLockDelay */
   USBD_AUDIO_CfgDesc[index++] = 0x00;    
-    
+  
+	printf("Length: %d\r\n", index);
   haudioInstance.paketDimension = (samplingFrequency/1000*Channels*2);
   haudioInstance.frequency=samplingFrequency;
   haudioInstance.buffer_length = haudioInstance.paketDimension * AUDIO_IN_PACKET_NUM;
