@@ -145,7 +145,7 @@ static int8_t Audio_Record(void)
 */
 static int8_t Audio_VolumeCtl(int16_t Volume)
 {
-	printf("VolumeCtl\r\n");
+	//printf("VolumeCtl\r\n");
   /* Call low layer volume setting function */
   int j;
   

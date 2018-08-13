@@ -313,6 +313,7 @@ static uint8_t  USBD_AUDIO_Setup (USBD_HandleTypeDef *pdev,
       break;
       
     case USB_REQ_GET_INTERFACE :
+			printf("Get IF\r\n");
       USBD_CtlSendData (pdev,
                         (uint8_t *)haudio->alt_setting,
                         1);
@@ -321,7 +322,7 @@ static uint8_t  USBD_AUDIO_Setup (USBD_HandleTypeDef *pdev,
     case USB_REQ_SET_INTERFACE :
       if ((uint8_t)(req->wValue) < USBD_MAX_NUM_INTERFACES)
       {
-				printf("Alt Setting: %d\r\n", (uint8_t)(req->wValue));
+				printf("Set IF Alt Setting: %d\r\n", (uint8_t)(req->wValue));
         haudio->alt_setting = (uint8_t)(req->wValue);
       }
       else
@@ -357,7 +358,7 @@ static uint8_t  *USBD_AUDIO_GetCfgDesc (uint16_t *length)
 static uint8_t USBD_AUDIO_DataIn (USBD_HandleTypeDef *pdev,
                                   uint8_t epnum)
 {
-  
+  // printf("USBD_AUDIO_DataIn\r\n");
   USBD_AUDIO_HandleTypeDef   *haudio;
   haudio = pdev->pClassData;
   uint32_t length_usb_pck;
@@ -403,6 +404,7 @@ static uint8_t USBD_AUDIO_DataIn (USBD_HandleTypeDef *pdev,
     }
     else 
     {      
+			printf("Dummy Buffer\r\n");
       USBD_LL_Transmit (pdev,AUDIO_IN_EP,
                         IsocInBuffDummy,
                         length_usb_pck);      
@@ -456,6 +458,7 @@ static uint8_t  USBD_AUDIO_EP0_TxReady (USBD_HandleTypeDef *pdev)
 */
 static uint8_t  USBD_AUDIO_SOF (USBD_HandleTypeDef *pdev)
 {  
+  printf("USBD_AUDIO_SOF\r\n");
   return USBD_OK;
 }
 
@@ -469,6 +472,7 @@ static uint8_t  USBD_AUDIO_SOF (USBD_HandleTypeDef *pdev)
 */
 static uint8_t  USBD_AUDIO_IsoINIncomplete (USBD_HandleTypeDef *pdev, uint8_t epnum)
 {  
+	printf("USBD_AUDIO_IsoINIncomplete\r\n");
   return USBD_OK;
 }
 /**
@@ -480,6 +484,7 @@ static uint8_t  USBD_AUDIO_IsoINIncomplete (USBD_HandleTypeDef *pdev, uint8_t ep
 */
 static uint8_t  USBD_AUDIO_IsoOutIncomplete (USBD_HandleTypeDef *pdev, uint8_t epnum)
 {  
+  printf("USBD_AUDIO_IsoOutIncomplete\r\n");
   return USBD_OK;
 }
 /**
@@ -670,6 +675,7 @@ uint8_t  USBD_AUDIO_Data_Transfer(USBD_HandleTypeDef *pdev, int16_t * audioData,
     
   }else if(haudio->state==STATE_USB_BUFFER_WRITE_STARTED){
     if(haudio->timeout++==TIMEOUT_VALUE){
+			printf("Timeout\r\n");
       haudio->state=STATE_USB_IDLE;
       ((USBD_AUDIO_ItfTypeDef *)pdev->pUserData)->Stop();   
      haudio->timeout=0;
@@ -779,7 +785,7 @@ void USBD_AUDIO_Init_Microphone_Descriptor(USBD_HandleTypeDef   *pdev, uint32_t 
   USBD_AUDIO_CfgDesc[index++] = 0x01;                                               /* bSourceID */
   USBD_AUDIO_CfgDesc[index++] = 0x01;                                               /* bControlSize */   
   //index = 47;   
-	printf("shoudl be 53 %d\r\n", index);
+	// printf("should be 53 %d\r\n", index);
   if(Channels == 1)
   {
     AUDIO_CONTROLS = (0x02);     

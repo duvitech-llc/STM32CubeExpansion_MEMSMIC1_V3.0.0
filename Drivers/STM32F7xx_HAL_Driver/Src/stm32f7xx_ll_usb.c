@@ -662,6 +662,7 @@ HAL_StatusTypeDef USB_EPStartXfer(USB_OTG_GlobalTypeDef *USBx , USB_OTG_EPTypeDe
       * short_packet pktcnt = N + (short_packet
       * exist ? 1 : 0)
       */
+			// printf("ep->xfer_len %d, ep->maxpacket %d\r\n", ep->xfer_len, ep->maxpacket);
       USBx_INEP(epnum)->DIEPTSIZ &= ~(USB_OTG_DIEPTSIZ_XFRSIZ);
       USBx_INEP(epnum)->DIEPTSIZ &= ~(USB_OTG_DIEPTSIZ_PKTCNT);
       USBx_INEP(epnum)->DIEPTSIZ |= (USB_OTG_DIEPTSIZ_PKTCNT & (((ep->xfer_len + ep->maxpacket - 1U) / ep->maxpacket) << 19));
@@ -694,10 +695,12 @@ HAL_StatusTypeDef USB_EPStartXfer(USB_OTG_GlobalTypeDef *USBx , USB_OTG_EPTypeDe
     {
       if ((USBx_DEVICE->DSTS & (1U << 8)) == 0U)
       {
+				// printf("USB_OTG_DIEPCTL_SODDFRM\r\n");
         USBx_INEP(epnum)->DIEPCTL |= USB_OTG_DIEPCTL_SODDFRM;
       }
       else
       {
+				// printf("USB_OTG_DIEPCTL_SD0PID_SEVNFRM\r\n");
         USBx_INEP(epnum)->DIEPCTL |= USB_OTG_DIEPCTL_SD0PID_SEVNFRM;
       }
     }
@@ -707,6 +710,7 @@ HAL_StatusTypeDef USB_EPStartXfer(USB_OTG_GlobalTypeDef *USBx , USB_OTG_EPTypeDe
 
     if (ep->type == EP_TYPE_ISOC)
     {
+			// printf("USB_WritePacket len: %d\r\n",(uint16_t)ep->xfer_len);
       (void)USB_WritePacket(USBx, ep->xfer_buff, ep->num, (uint16_t)ep->xfer_len, dma);
     }
   }

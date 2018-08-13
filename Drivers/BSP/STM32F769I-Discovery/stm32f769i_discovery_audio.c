@@ -1853,7 +1853,7 @@ static HAL_StatusTypeDef DFSDMx_FilterMspInitEx(DFSDM_Filter_HandleTypeDef *hdfs
   if (hdfsdm_filter->Instance == AUDIO_DFSDMx_TOP_LEFT_FILTER) 
   {
 		/* DMA IRQ Channel configuration */
-		HAL_NVIC_SetPriority(AUDIO_DFSDMx_DMAx_TOP_LEFT_IRQ, AUDIO_OUT_IRQ_PREPRIO, 0);
+		HAL_NVIC_SetPriority(AUDIO_DFSDMx_DMAx_TOP_LEFT_IRQ, AUDIO_IN_IRQ_PREPRIO, 0);
 		HAL_NVIC_EnableIRQ(AUDIO_DFSDMx_DMAx_TOP_LEFT_IRQ);
   } 
 	

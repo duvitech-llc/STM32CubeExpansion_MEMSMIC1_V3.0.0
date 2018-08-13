@@ -103,7 +103,7 @@ void HAL_PCD_MspInit(PCD_HandleTypeDef *hpcd)
     __HAL_RCC_USB_OTG_HS_CLK_ENABLE();
     
     /* Set USBHS Interrupt to the lowest priority */
-    HAL_NVIC_SetPriority(OTG_HS_IRQn, 0x0F, 0);
+    HAL_NVIC_SetPriority(OTG_HS_IRQn, 0x05, 0);
     
     /* Enable USBHS Interrupt */
     HAL_NVIC_EnableIRQ(OTG_HS_IRQn);   
@@ -300,6 +300,9 @@ LL Driver Interface (USB Device Library --> PCD)
 USBD_StatusTypeDef  USBD_LL_Init (USBD_HandleTypeDef *pdev)
 {
 	
+  /* Change Systick prioity */
+  NVIC_SetPriority (SysTick_IRQn, 0);  
+	
 #ifdef USE_STM32F769_DISCO
 	/* Set LL Driver parameters */
   hpcd.Instance = USB_OTG_HS;
@@ -339,8 +342,6 @@ USBD_StatusTypeDef  USBD_LL_Init (USBD_HandleTypeDef *pdev)
 		HAL_PCD_SetTxFiFo(&hpcd, 1, 0x64);
 	}
 #else
-  /* Change Systick prioity */
-  NVIC_SetPriority (SysTick_IRQn, 0);  
   
   /*Set LL Driver parameters */
   hpcd.Instance = USB_OTG_FS;
