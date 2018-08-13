@@ -726,7 +726,7 @@ void USBD_AUDIO_Init_Microphone_Descriptor(USBD_HandleTypeDef   *pdev, uint32_t 
 	USBD_AUDIO_CfgDesc[index++] = 0x00;                                /* bFirstInterface */
 	USBD_AUDIO_CfgDesc[index++] = 0x02;                                /* bInterface Count */
 	USBD_AUDIO_CfgDesc[index++] = USB_DEVICE_CLASS_AUDIO;              /* bInterfaceClass */
-	USBD_AUDIO_CfgDesc[index++] = AUDIO_SUBCLASS_AUDIOCONTROL;         /* bInterfaceSubClass */
+	USBD_AUDIO_CfgDesc[index++] = AUDIO_SUBCLASS_AUDIOSTREAMING;         /* bInterfaceSubClass */
 	USBD_AUDIO_CfgDesc[index++] = AUDIO_PROTOCOL_UNDEFINED;            /* bInterfaceProtocol */
 	USBD_AUDIO_CfgDesc[index++] = 0x00;                                /* iFunction- string index */
 	
@@ -851,7 +851,7 @@ void USBD_AUDIO_Init_Microphone_Descriptor(USBD_HandleTypeDef   *pdev, uint32_t 
   USBD_AUDIO_CfgDesc[index++] =  AUDIO_STANDARD_ENDPOINT_DESC_SIZE;            /* bLength */
   USBD_AUDIO_CfgDesc[index++] = 0x05;                                          /* bDescriptorType */
   USBD_AUDIO_CfgDesc[index++] = AUDIO_IN_EP;                                   /* bEndpointAddress 1 in endpoint*/
-  USBD_AUDIO_CfgDesc[index++] = USBD_EP_TYPE_ISOC; //0x05;                                          /* bmAttributes */
+  USBD_AUDIO_CfgDesc[index++] = 0x05;                                          /* bmAttributes */
   USBD_AUDIO_CfgDesc[index++] = ((samplingFrequency/1000+2)*Channels*2)&0xFF;  /* wMaxPacketSize */ 
   USBD_AUDIO_CfgDesc[index++] = ((samplingFrequency/1000+2)*Channels*2)>>8; 
   USBD_AUDIO_CfgDesc[index++] = 0x04;                                          /* bInterval */
@@ -861,7 +861,7 @@ void USBD_AUDIO_Init_Microphone_Descriptor(USBD_HandleTypeDef   *pdev, uint32_t 
   USBD_AUDIO_CfgDesc[index++] = AUDIO_STREAMING_ENDPOINT_DESC_SIZE;            /* bLength */
   USBD_AUDIO_CfgDesc[index++] = AUDIO_ENDPOINT_DESCRIPTOR_TYPE;                /* bDescriptorType */
   USBD_AUDIO_CfgDesc[index++] = AUDIO_ENDPOINT_GENERAL;                        /* bDescriptor */
-  USBD_AUDIO_CfgDesc[index++] = 0x00;                                          /* bmAttributes */
+  USBD_AUDIO_CfgDesc[index++] = 0x01;                                          /* bmAttributes */
   USBD_AUDIO_CfgDesc[index++] = 0x00;                                          /* bLockDelayUnits */
   USBD_AUDIO_CfgDesc[index++] = 0x00;                                          /* wLockDelay */
   USBD_AUDIO_CfgDesc[index++] = 0x00;    
