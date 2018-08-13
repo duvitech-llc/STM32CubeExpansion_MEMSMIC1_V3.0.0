@@ -119,6 +119,9 @@
 #include "usbd_audio_if.h"    
 #include "audio_application.h"
 #include "stm32f769i_discovery_audio.h"
+
+void MX_USART1_UART_Init(UART_HandleTypeDef* huart);
+
 #endif
 
 #ifdef USE_STM32F3XX_NUCLEO

@@ -51,7 +51,17 @@
 
 
 /* USER CODE BEGIN Includes */
+#include <stdio.h>
 
+#ifdef __GNUC__
+	/* With GCC/RAISONANCE, small printf (option LD Linker->Libraries->Small printf
+		 set to 'Yes') calls __io_putchar() */
+	#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+#else
+	#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+#endif /* __GNUC__ */
+	
+	
 /** @addtogroup X_CUBE_MEMSMIC1_Applications
 * @{
 */ 
@@ -69,6 +79,21 @@
 */
 USBD_HandleTypeDef hUSBDDevice;
 extern USBD_AUDIO_ItfTypeDef  USBD_AUDIO_fops;
+	
+#ifdef USE_STM32F769_DISCO
+UART_HandleTypeDef huart1;
+#endif
+
+PUTCHAR_PROTOTYPE
+{
+  /* Place your implementation of fputc here */
+	
+#ifdef USE_STM32F769_DISCO
+	HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1,10); 	
+#endif
+  return ch;
+}
+
 /**
 * @}
 */
@@ -104,6 +129,13 @@ int main(void)
 #endif
   /* Configure the system clock */
   SystemClock_Config();
+	
+#ifdef USE_STM32F769_DISCO	
+	MX_USART1_UART_Init(&huart1);
+#endif
+	
+	printf("Duvitech 2018\r\n");
+	
   /* Initialize USB descriptor basing on channels number and sampling frequency */
   USBD_AUDIO_Init_Microphone_Descriptor(&hUSBDDevice, AUDIO_SAMPLING_FREQUENCY, AUDIO_CHANNELS);
   /* Init Device Library */

@@ -126,6 +126,7 @@ static int8_t Audio_DeInit(uint32_t options)
 */
 static int8_t Audio_Record(void)
 {
+	printf("Record\r\n");
 #ifndef DISABLE_USB_DRIVEN_ACQUISITION  
 #if defined(USE_STM32L4XX_NUCLEO) || defined(USE_STM32F769_DISCO)
   return BSP_AUDIO_IN_Record(PCM_Buffer, 0);
@@ -144,6 +145,7 @@ static int8_t Audio_Record(void)
 */
 static int8_t Audio_VolumeCtl(int16_t Volume)
 {
+	printf("VolumeCtl\r\n");
   /* Call low layer volume setting function */
   int j;
   
@@ -166,6 +168,7 @@ static int8_t Audio_VolumeCtl(int16_t Volume)
 */
 static int8_t Audio_MuteCtl(uint8_t cmd)
 {
+	printf("MuteCtl\r\n");
   return AUDIO_OK;
 }
 
@@ -177,6 +180,8 @@ static int8_t Audio_MuteCtl(uint8_t cmd)
 */
 static int8_t Audio_Stop(void)
 {  
+	
+	printf("Stop\r\n");
 #ifndef DISABLE_USB_DRIVEN_ACQUISITION  
   return BSP_AUDIO_IN_Stop();  
 #else
@@ -192,6 +197,7 @@ static int8_t Audio_Stop(void)
 
 static int8_t Audio_Pause(void)
 {
+	printf("Pause\r\n");
   return 0;
 }
 
@@ -203,6 +209,7 @@ static int8_t Audio_Pause(void)
 */
 static int8_t Audio_Resume(void)
 {  
+	printf("Resume\r\n");
   return AUDIO_OK;
 }
 
@@ -214,6 +221,8 @@ static int8_t Audio_Resume(void)
 
 static int8_t Audio_CommandMgr(uint8_t cmd)
 {
+	
+	printf("CommandMgr: 0x%02X\r\n", cmd);
   return AUDIO_OK;
 }
 /**
