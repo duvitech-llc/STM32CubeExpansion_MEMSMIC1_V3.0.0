@@ -44,10 +44,6 @@
 * @retval None
 */
 
-#define VCP_RX_Pin GPIO_PIN_10
-#define VCP_RX_GPIO_Port GPIOA
-#define VCP_TX_Pin GPIO_PIN_9
-#define VCP_TX_GPIO_Port GPIOA
 
 void SystemClock_Config(void)
 {
@@ -215,5 +211,20 @@ void MX_USART1_UART_Init(UART_HandleTypeDef* huart)
 
 }
 
-
+void MX_GPIO_Init(void)
+{
+  GPIO_InitTypeDef GPIO_InitStruct;
+	
+  __HAL_RCC_GPIOJ_CLK_ENABLE();
+	
+  /*Configure GPIO pins : LD_USER1_Pin LD_USER2_Pin */
+  GPIO_InitStruct.Pin = LD_USER1_Pin|LD_USER2_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  HAL_GPIO_Init(GPIOJ, &GPIO_InitStruct);
+	
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOJ, LD_USER1_Pin|LD_USER2_Pin, GPIO_PIN_RESET);
+}
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

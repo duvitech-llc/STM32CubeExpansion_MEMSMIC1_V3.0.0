@@ -359,6 +359,7 @@ static uint8_t USBD_AUDIO_DataIn (USBD_HandleTypeDef *pdev,
                                   uint8_t epnum)
 {
   // printf("USBD_AUDIO_DataIn\r\n");
+	HAL_GPIO_TogglePin(GPIOJ, GPIO_PIN_5);
   USBD_AUDIO_HandleTypeDef   *haudio;
   haudio = pdev->pClassData;
   uint32_t length_usb_pck;
@@ -687,6 +688,7 @@ uint8_t  USBD_AUDIO_Data_Transfer(USBD_HandleTypeDef *pdev, int16_t * audioData,
       memcpy((uint8_t *)(((uint8_t *)haudio->buffer)+true_dim),(uint8_t *)haudio->buffer, dataAmount);
     }
   }
+	
   return USBD_OK;  
 }
 

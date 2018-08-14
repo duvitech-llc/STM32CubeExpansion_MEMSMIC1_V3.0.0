@@ -137,10 +137,7 @@ void AudioProcess(void)
 void Init_Acquisition_Peripherals(uint32_t AudioFreq, uint32_t ChnlNbrIn, uint32_t ChnlNbrOut)
 {  
   BSP_AUDIO_IN_Init(AudioFreq, 16, ChnlNbrIn);  
-	
-#if defined(USE_STM32F769_DISCO)
-  BSP_AUDIO_IN_AllocScratch (Scratch, SCRATCH_BUFF_SIZE);
-#endif
+
 }
 
 /**

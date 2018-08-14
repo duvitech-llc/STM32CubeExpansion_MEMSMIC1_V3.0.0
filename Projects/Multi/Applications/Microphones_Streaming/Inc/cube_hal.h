@@ -108,7 +108,17 @@
 #endif
 
 #ifdef USE_STM32F769_DISCO
-#define USB_IRQHandler OTG_FS_IRQHandler
+#define USB_IRQHandler OTG_HS_IRQHandler
+
+#define VCP_RX_Pin GPIO_PIN_10
+#define VCP_RX_GPIO_Port GPIOA
+#define VCP_TX_Pin GPIO_PIN_9
+#define VCP_TX_GPIO_Port GPIOA
+#define LD_USER1_Pin GPIO_PIN_13
+#define LD_USER1_GPIO_Port GPIOJ
+#define LD_USER2_Pin GPIO_PIN_5
+#define LD_USER2_GPIO_Port GPIOJ
+
 #include "stm32f7xx_hal.h"
 #include "stm32f7xx.h"
 #include "stm32xx_it.h"
@@ -121,6 +131,7 @@
 #include "stm32f769i_discovery_audio.h"
 
 void MX_USART1_UART_Init(UART_HandleTypeDef* huart);
+void MX_GPIO_Init(void);
 
 #endif
 

@@ -1195,6 +1195,7 @@ uint8_t BSP_AUDIO_IN_GetChannelNumber(void)
   */
 uint8_t BSP_AUDIO_IN_Record(uint16_t* pbuf, uint32_t size)
 {  
+	printf("BSP_AUDIO_IN_Record\r\n");
   if (AudioIn_Device == INPUT_DEVICE_DIGITAL_MIC)
   {
 		int32_t counter = 0;
@@ -1229,6 +1230,7 @@ uint8_t BSP_AUDIO_IN_Record(uint16_t* pbuf, uint32_t size)
   */
 uint8_t BSP_AUDIO_IN_Stop(void)
 {
+	printf("BSP_AUDIO_IN_Stop\r\n");
   if (AudioIn_Device == INPUT_DEVICE_DIGITAL_MIC)
   { 
 			int32_t counter = 0;

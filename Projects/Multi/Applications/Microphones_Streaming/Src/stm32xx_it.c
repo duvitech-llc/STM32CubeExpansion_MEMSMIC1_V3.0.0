@@ -66,6 +66,7 @@ void NMI_Handler(void)
 void HardFault_Handler(void)
 {
   /* Go to infinite loop when Hard Fault exception occurs */
+	HAL_GPIO_WritePin(LD_USER1_GPIO_Port, LD_USER1_Pin, GPIO_PIN_SET);
   while (1)
   {
   }
@@ -114,16 +115,6 @@ void SysTick_Handler(void)
   * @retval None
   */
 void USB_IRQHandler(void)
-{
-  HAL_PCD_IRQHandler(&hpcd);
-}
-
-/**
-  * @brief  This function handles USB-On-The-Go FS/HS global interrupt request.
-  * @param  None
-  * @retval None
-  */
-void OTG_HS_IRQHandler(void)
 {
   HAL_PCD_IRQHandler(&hpcd);
 }

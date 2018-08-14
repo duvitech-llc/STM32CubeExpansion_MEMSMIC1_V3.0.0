@@ -88,7 +88,7 @@ modification in the application layer developed with the older versions of the d
 
 /*Uncomment this define if you want to configure and start acquisition 
 independentrly from USB functionalities*/
-#define DISABLE_USB_DRIVEN_ACQUISITION
+// #define DISABLE_USB_DRIVEN_ACQUISITION
 
 #if defined(STM32L053xx) || defined(STM32F072xB)
 #if (AUDIO_CHANNELS > 2)

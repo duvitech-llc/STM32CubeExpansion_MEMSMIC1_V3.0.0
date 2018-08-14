@@ -132,6 +132,9 @@ int main(void)
 	
 #ifdef USE_STM32F769_DISCO	
 	MX_USART1_UART_Init(&huart1);
+	
+  MX_GPIO_Init();
+		
 #endif
 	
 	printf("Duvitech 2018\r\n");
@@ -155,8 +158,7 @@ int main(void)
   
   while (1)
   {    
-    
-    
+    HAL_Delay(250);    
   }
 }
 
