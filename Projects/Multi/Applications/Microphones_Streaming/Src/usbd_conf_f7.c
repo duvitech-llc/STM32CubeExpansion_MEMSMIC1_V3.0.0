@@ -334,9 +334,9 @@ USBD_StatusTypeDef  USBD_LL_Init (USBD_HandleTypeDef *pdev)
   /* Initialize LL Driver */
   HAL_PCD_Init(&hpcd);
   if(hpcd.Init.speed == PCD_SPEED_HIGH){
-		HAL_PCDEx_SetRxFiFo(&hpcd, 0x400);
-		HAL_PCDEx_SetTxFiFo(&hpcd, 0, 0x400);
-		HAL_PCDEx_SetTxFiFo(&hpcd, 1, 0x400);
+		HAL_PCDEx_SetRxFiFo(&hpcd, 0x80);
+		HAL_PCDEx_SetTxFiFo(&hpcd, 0, 0x40);
+		HAL_PCDEx_SetTxFiFo(&hpcd, 1, 0x64);
 	}else{
 		HAL_PCD_SetRxFiFo(&hpcd, 0x80);
 		HAL_PCD_SetTxFiFo(&hpcd, 0, 0x40);

@@ -359,7 +359,6 @@ static uint8_t USBD_AUDIO_DataIn (USBD_HandleTypeDef *pdev,
                                   uint8_t epnum)
 {
   // printf("USBD_AUDIO_DataIn\r\n");
-	HAL_GPIO_TogglePin(GPIOJ, GPIO_PIN_5);
   USBD_AUDIO_HandleTypeDef   *haudio;
   haudio = pdev->pClassData;
   uint32_t length_usb_pck;
@@ -372,13 +371,17 @@ static uint8_t USBD_AUDIO_DataIn (USBD_HandleTypeDef *pdev,
   haudio->timeout=0;
   if (epnum == (AUDIO_IN_EP & 0x7F))
   {    
+		HAL_GPIO_TogglePin(GPIOJ, GPIO_PIN_5);
     if (haudio->state == STATE_USB_IDLE) 
     {
       haudio->state=STATE_USB_REQUESTS_STARTED;
       ((USBD_AUDIO_ItfTypeDef *)pdev->pUserData)->Record();      
-    }    
+    }
+    
     if (haudio->state == STATE_USB_BUFFER_WRITE_STARTED)   
     {      
+			printf("xfer\r\n");
+			//HAL_Delay(5);
       haudio->rd_ptr = haudio->rd_ptr % (true_dim);              
       if(IsocInWr_app<haudio->rd_ptr){
         app = ((true_dim) - haudio->rd_ptr) +  IsocInWr_app;
